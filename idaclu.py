@@ -12,15 +12,19 @@ import sys
 
 lib_qt = None
 try:
-    from PyQt5 import QtCore, QtGui, QtWidgets
-    lib_qt = "pyqt5"
+    from PySide6 import QtCore, QtGui, QtWidgets
+    lib_qt = "pyside6"
 except ImportError:
     try:
-        from PySide import QtCore, QtGui
-        from PySide import QtGui as QtWidgets
-        lib_qt = "pyside"
+        from PyQt5 import QtCore, QtGui, QtWidgets
+        lib_qt = "pyqt5"
     except ImportError:
-        pass
+        try:
+            from PySide import QtCore, QtGui
+            from PySide import QtGui as QtWidgets
+            lib_qt = "pyside"
+        except ImportError:
+            pass
 
 
 # make sub-plugins discoverable
@@ -171,7 +175,13 @@ class ScriptEnv():
             self.idb_path = ida_shims.get_idb_path()
             self.is_dbg = idaapi.is_debugger_on()
             # self.is_ida
-            self.lib_qt = self.lib_qt = "pyside" if self.ver_sdk < 690 else "pyqt5"
+            if self.lib_qt is None:
+                if self.ver_sdk < 690:
+                    self.lib_qt = "pyside"
+                elif self.ver_sdk >= 900:
+                    self.lib_qt = "pyside6"
+                else:
+                    self.lib_qt = "pyqt5"
             self.platform = sys.platform
             plg_dst, plg_src, plg_scope, plg_type = self.get_plugin_ort()
             self.plg_dst = plg_dst
@@ -211,7 +221,7 @@ class IdaCluForm(PluginForm):
         translator.load('idaclu/assets/i18n/tr_cn', os.path.dirname(__file__))
         app.installTranslator(translator)
 
-        if self.env_desc.lib_qt == 'pyqt5':
+        if self.env_desc.lib_qt in ('pyqt5', 'pyside6'):
             self.parent = self.FormToPyQtWidget(form)
         elif self.env_desc.lib_qt == 'pyside':
             self.parent = self.FormToPySideWidget(form)

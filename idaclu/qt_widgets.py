@@ -3,6 +3,9 @@ from collections import defaultdict, OrderedDict
 from functools import partial
 from re import split
 
+from PySide6 import QtGui
+
+
 import idaapi
 
 from idaclu.qt_shims import (
@@ -57,7 +60,8 @@ class LabelTool(QWidget):
         ]
         font = QFont()
         font.setBold(True)
-        font.setWeight(75)
+        #font.setWeight(75)
+        font.setWeight(QtGui.QFont.Weight.Bold)
         self.font = font
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -343,7 +347,9 @@ class FilterInputGroup(QWidget):
     def initText(self, name, parent=None):
         font = QFont()
         font.setBold(True)
-        font.setWeight(75)
+
+        #font.setWeight(75)
+        font.setWeight(QtGui.QFont.Weight.Bold)
 
         label = QPushButton(parent)
         label.setText(name.upper())
@@ -493,8 +499,8 @@ class CheckableComboBox(QComboBox):
             item.setData(userData)
         if not colr is None:
             item.setBackground(QColor(*colr))
-        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsUserCheckable)
-        item.setData(Qt.Unchecked, Qt.CheckStateRole)
+        item.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsUserCheckable)
+        item.setData(Qt.CheckState.Unchecked, Qt.ItemDataRole.CheckStateRole)
         self.model().appendRow(item)
 
     def chgItem(self, row, text, color=None):
@@ -660,7 +666,7 @@ class FrameLayout(QWidget):
             painter.setPen(QColor(64, 64, 64))
             if self.env_desc.lib_qt == 'pyqt5':
                 painter.drawPolygon(*self._arrow)
-            else:  # 'pyside'
+            else:  # 'pyside', 'pyside6'
                 painter.drawPolygon(self._arrow)
             painter.end()
 

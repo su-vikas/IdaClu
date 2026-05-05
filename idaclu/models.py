@@ -119,7 +119,7 @@ class ResultModel(QAbstractItemModel):
             if rgb_string and rgb_string != 'rgb(255,255,255)':
                 r, g, b = map(int, rgb_string.removeprefix("rgb(").removesuffix(")").split(","))
                 color = QColor(r, g, b)
-                if self.env.lib_qt == 'pyqt5':
+                if self.env.lib_qt in ('pyqt5', 'pyside6'):
                     return color
                 elif self.env.lib_qt == 'pyside':
                     brush = QBrush(color)
@@ -142,18 +142,19 @@ class ResultModel(QAbstractItemModel):
         set_col = index.column()
         lib_qt = self.env.lib_qt
 
+        is_modern = lib_qt in ('pyqt5', 'pyside6')
         if value.startswith('rgb'):
             beg_col = 0
-            end_col = set_col if lib_qt == 'pyqt5' else None
+            end_col = set_col if is_modern else None
             roles = [Qt.BackgroundRole]
         else:
             beg_col = set_col
-            end_col = set_col + 1 if lib_qt == 'pyqt5' else None
+            end_col = set_col + 1 if is_modern else None
             roles = [Qt.EditRole]
 
         item.setData(set_col, value)
         beg_idx = index.sibling(index.row(), beg_col)
-        if lib_qt == 'pyqt5':
+        if is_modern:
             end_idx = index.sibling(index.row(), end_col)
             self.dataChanged.emit(beg_idx, end_idx, roles)
         elif lib_qt == 'pyside':

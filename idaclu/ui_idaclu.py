@@ -11,6 +11,7 @@
 # from PySide2.QtCore import *
 # from PySide2.QtGui import *
 # from PySide2.QtWidgets import *
+from PySide6 import QtGui
 from idaclu.qt_shims import (
     Signal,
     QSizePolicy,
@@ -83,7 +84,8 @@ class Ui_PluginDialog(object):
         self.ScriptsHeader.setMinimumSize(QSize(200, 30))
         font = QFont()
         font.setBold(True)
-        font.setWeight(75)
+        #font.setWeight(75)
+        font.setWeight(QtGui.QFont.Weight.Bold)
         self.ScriptsHeader.setFont(font)
         self.ScriptsHeader.setCursor(QCursor(Qt.PointingHandCursor))
         self.ScriptsHeader.setProperty("class", "head")
@@ -121,7 +123,8 @@ class Ui_PluginDialog(object):
         self.FiltersHeader.setMinimumSize(QSize(200, 30))
         font1 = QFont()
         font1.setBold(True)
-        font1.setWeight(75)
+        #font1.setWeight(75)
+        font1.setWeight(QtGui.QFont.Weight.Bold)
         self.FiltersHeader.setFont(font1)
         self.FiltersHeader.setCursor(QCursor(Qt.PointingHandCursor))
         self.FiltersHeader.setProperty("class", "head")
